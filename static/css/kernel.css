@@ -1,0 +1,25 @@
+.grid {
+    display: flex; /* establish flex container */
+    flex-wrap: wrap; /* enable flex items to wrap */
+    justify-content: space-around;
+
+}
+
+.cell {
+    flex: 0 0 33%; /* don't grow, don't shrink, width */
+    height: 25px;
+    margin-bottom: 25px;
+    background-color: white;
+}
+
+
+.fcell {
+    flex: 0 0 20%; /* don't grow, don't shrink, width */
+    height: 25px;
+    margin-bottom: 25px;
+    background-color: white;
+}
+
+.form-group{
+    margin-bottom: 0!important;
+}
