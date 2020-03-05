@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        ImageProcessor
+    </title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div>
+            <h2>ImageProcessor</h2>
+            <h3><a href="{{ url_for('filter_bp.image_filter') }}">图像滤镜</a></h3>
+            <h3><a href="{{ url_for('filter_bp.image_enhance') }}">图像增强</a></h3>
+            <h3><a href="{{ url_for('filter_bp.image_kernel') }}">自定义卷积核</a></h3>
+            <h3><a href="{{ url_for('filter_bp.image_styletransfer') }}">StyleTransfer</a></h3>
+            <hr>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-3.3.7/js/bootstrap.js"></script>
+</body>
+</html>

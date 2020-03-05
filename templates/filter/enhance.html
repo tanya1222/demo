@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block body %}
+    <h2>Python 图像增强处理</h2>
+    <form id="image-form" class="form-horizontal" action='{{ url_for('filter_bp.image_enhance') }}' method="post"
+          enctype="multipart/form-data">
+
+        <div class="form-group">
+            <h3>原始图像:</h3>
+            <input type="file" name="image" required>
+        </div>
+
+        <div class="form-group">
+            <h3>增强方式</h3>
+            <label for="mode">选择增强方式:</label>
+            <select id="mode" name="enhance" required>
+                <option value="Color">色彩平衡调节</option>
+                <option value="Contrast">对比度调节</option>
+                <option value="Brightness">亮度调节</option>
+                <option value="Sharpness">清晰度调节</option>
+            </select>
+        </div>
+
+        <div>
+            <div class="form-group">
+                <h3>增强因子</h3>
+
+                <label for="factor-select">选择增强因子:</label>
+                <select id="factor-select" name="factor-select" required>
+                    <option value="0.0">0.0</option>
+                    <option value="0.5">0.5</option>
+                    <option value="1.0">1.0</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2.0">2.0</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3.0">3.0</option>
+                    <option value="3.5">3.5</option>
+                    <option value="4.0">4.0</option>
+                    <option value="4.5">4.5</option>
+                    <option value="5.0">5.0</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="factor-custom">自定义增强因子</label>
+                <input type="text" name="factor-custom" id="factor-custom">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-success" type="submit">确定</button>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/kernel.css">
+{% endblock %}
+
+{% block body %}
+    <h2>Python 自定义Kernel图像处理</h2>
+    <form id="image-form" class="form-horizontal" action='{{ url_for('filter_bp.image_kernel') }}' method="post"
+          enctype="multipart/form-data">
+
+        <div class="form-group">
+            <h3>原始图像:</h3>
+            <input type="file" name="image" required>
+        </div>
+
+        <div class="form-group">
+            <h3>Kernel尺寸</h3>
+            <label for="size">选择Kernel尺寸</label>
+            <select id="size" name="size" onchange="selectMode(this.value)" required>
+                <option value="txt">3 x 3</option>
+                <option value="fxf">5 x 5</option>
+            </select>
+        </div>
+
+        <div>
+            <div class="form-group">
+                <h3>Kernel内核序列</h3>
+
+                <label for="kernel">填写内核序列</label>
+                <h4>卷积核</h4>
+                <div class="row kernel kernel-txt">
+                    {#3 x 3#}
+                    <div class="grid col-md-6 col-xs-4">
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r1c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r1c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r1c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r2c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r2c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r2c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r3c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r3c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="r3c3" value="1.0" required>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kernel kernel-fxf" style="display: none">
+                    {#5 x 5#}
+                    <div class="grid col-md-8">
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr1c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr1c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr1c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr1c4" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr1c5" value="1.0" required>
+                            </label>
+                        </div>
+
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr2c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr2c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr2c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr2c4" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr2c5" value="1.0" required>
+                            </label>
+                        </div>
+
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr3c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr3c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr3c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr3c4" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr3c5" value="1.0" required>
+                            </label>
+                        </div>
+
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr4c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr4c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr4c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr4c4" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr4c5" value="1.0" required>
+                            </label>
+                        </div>
+
+                        {#第五行#}
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr5c1" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr5c2" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr5c3" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr5c4" value="1.0" required>
+                            </label>
+                        </div>
+                        <div class="fcell">
+                            <label>
+                                <input type="number" step="0.1" min="-1000" max="1000" name="fr5c5" value="1.0" required>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <h3>比例因子</h3>
+                <label>
+                    Scale Factor:
+                    <input type="number" step="0.1" min="-1000" max="1000" name="scale">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <h3>偏移量</h3>
+                <label>
+                    Offset:
+                    <input type="number" step="0.1" min="-1000" max="1000" name="offset">
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-success" type="submit">确定</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="/static/js/kernel.js"></script>
+{% endblock %}

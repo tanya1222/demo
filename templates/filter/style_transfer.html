@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form id="image-form" class="form-horizontal" action='{{ url_for('filter_bp.image_styletransfer') }}' method="post"
+          enctype="multipart/form-data">
+
+        <h2>图像滤镜处理</h2>
+        <div class="form-group">
+            <h3>原始图像:</h3>
+            <input type="file" name="image" required>
+        </div>
+
+        <div class="form-group">
+            <h3>风格图像:</h3>
+            <input type="file" name="style_image" required>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-success" type="submit">确定</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="/static/js/filter.js"></script>
+{% endblock %}

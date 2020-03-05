@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% if title %}
+            {{ title }} - 图像处理
+        {% else %}
+            Python-图像处理结果
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/kernel.css">
+    <link rel="stylesheet" href="/static/css/result.css">
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <h4>处理方式:{{ mode }}</h4>
+    </div>
+    <div class="row">
+        {% if flag.startswith('filter') %}
+            <form action="{{ url_for('filter_bp.image_filter') }}" method="post">
+                <div class="col-md-5">
+
+                    <input type="hidden" name="mode" value="{{ mode }}">
+
+                    {# 高斯模糊半径 radius #}
+                    {% if mode == 'GaussianBlur' %}
+                        <div class="form-group GaussianBlur-radius options">
+                            <label> 模糊半径:
+                                <input type="number" step="0.1" name="GaussianBlur-radius" value="{{ olddata }}"
+                                       required>
+                            </label>
+                        </div>
+                    {% elif mode in ["MedianFilter", "MinFilter", "MaxFilter", "ModeFilter"] %}
+
+                        {# 均值滤波 size #}
+                        <div class="form-group MFilter-size options">
+                            <label> 内核大小:
+                                <input type="number" step="2" min="1" name="MFilter-size" value="{{ olddata }}"
+                                       required>(奇数)
+                            </label>
+                        </div>
+                    {% elif mode == 'UnsharpMask' %}
+                        {# 反锐化掩模 (radius=2, percent=150, threshold=3) #}
+                        <div class="UnsharpMask options">
+                            <div class="form-group">
+                                <label> 模糊半径:
+                                    <input type="number" step="0.1" name="UnsharpMask-radius"
+                                           value="{{ olddata.split('#')[0] }}" required>
+                                </label>
+                            </div>
+                            <div class="form-group">
+
+                                <label> 反锐化强度:
+                                    <input type="number" step="1" name="UnsharpMask-percent"
+                                           value="{{ olddata.split('#')[1] }}" required>%(整数)
+                                </label>
+                            </div>
+                            <div class="form-group">
+
+                                <label> 阈值:
+                                    <input type="number" step="1" name="UnsharpMask-threshold"
+                                           value="{{ olddata.split('#')[2] }}" required>
+                                </label>
+                            </div>
+                        </div>
+                    {% elif mode == 'RankFilter' %}
+                        {# 等级滤波(size, rank) #}
+                        <div class="RankFilter options">
+                            <div class="form-group">
+                                <label> 内核大小:
+                                    <input type="number" step="2" min="1" name="RankFilter-size"
+                                           value="{{ olddata.split('#')[0] }}" required>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label> 像素值:
+                                    <input type="number" step="1" name="RankFilter-rank"
+                                           value="{{ olddata.split('#')[1] }}" required>
+                                </label>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <input type="hidden" name="adjustment" value="1">
+                    <input type="hidden" name="filename" value="{{ filename }}">
+                    <button type="submit" class="btn btn-primary">调整参数</button>
+                </div>
+            </form>
+
+        {% elif flag == 'enhance' %}
+            <form action="{{ url_for('filter_bp.image_enhance') }}" method="post">
+                <div class="form-group col-md-5">
+                    <label for="factor-custom">动态调整增强因子</label>
+                    <input type="number" step="0.1" name="factor-custom" value="{{ olddata }}" id="factor-custom"
+                           required>
+                </div>
+                <div class="col-md-3">
+                    <input type="hidden" name="adjustment" value="1">
+                    <input type="hidden" name="filename" value="{{ filename }}">
+                    <input type="hidden" name="enhance" value="{{ mode }}">
+                    <button type="submit" class="btn btn-primary">调整参数</button>
+                </div>
+            </form>
+        {% elif flag.startswith('kernel') %}
+
+            {% with elements = olddata.split('#') %}
+
+                <form action="{{ url_for('filter_bp.image_kernel') }}" method="post">
+                    <div class="form-group">
+                        <label style="margin-left: 15px">卷积核</label>
+
+                        {% if flag.endswith('txt') %}
+                            <input type="hidden" name="size" value="txt">
+                            <div class="kernel kernel-txt">
+                                {#3 x 3#}
+                                <div class="grid col-md-5">
+
+                                    {% for i in range(1,4) %}
+                                        {% for j in range(1,4) %}
+                                            <div class="cell">
+                                                <label>
+                                                    <input type="number" step="0.1" min="-1000" max="1000"
+                                                           name="r{{ i }}c{{ j }}"
+                                                           value="{{ elements[3*i-4+j] }}"
+                                                           required>
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% elif flag.endswith('fxf') %}
+                            <input type="hidden" name="size" value="fxf">
+                            <div class="kernel kernel-fxf">
+                                {#5 x 5#}
+                                <div class="grid col-md-6">
+
+                                    {% for i in range(1,6) %}
+                                        {% for j in range(1,6) %}
+                                            <div class="fcell">
+                                                <label>
+                                                    <input type="number" step="0.1" min="-1000" max="1000"
+                                                           name="fr{{ i }}c{{ j }}"
+                                                           value="{{ elements[5*i-6+j] }}"
+                                                           required>
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>比例因子
+                                <input type="number" step="0.1" name="scale" value="{{ elements[-2] }}">
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>偏移量
+                                <input type="number" step="0.1" name="offset" value="{{ elements[-1] }}">
+                            </label>
+                        </div>
+
+                        <input type="hidden" name="adjustment" value="1">
+                        <input type="hidden" name="filename" value="{{ filename }}">
+                    </div>
+
+                    <div class="col-md-1 col-md-offset-2">
+                        <button type="submit" class="btn btn-primary">调整参数</button>
+                    </div>
+                </form>
+            {% endwith %}
+        {% endif %}
+        <div class="col-md-2">
+            <a href="/{{ back }}">返回</a>
+            <a href="/">返回首页</a>
+        </div>
+    </div>
+    <div class="row" style="align-items: center">
+        <div class="col-md-5 col-sm-12">
+            <div>
+                原始图像: <br>
+                <img src="/static/images/{{ filename }}" width="500">
+            </div>
+        </div>
+
+        <div class="col-md-5 col-sm-12">
+            <div style="margin-left: 20px">
+                处理结果: <a href="/download/{{ res_name }}" target="_blank">点击下载</a> <br>
+                <img src="/static/images/{{ res_name }}?time={{ time }}" width="500">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap-3.3.7/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/result.js"></script>
+
+</body>
+</html>
